@@ -63,7 +63,7 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get('/', (req, res) => {
-  res.status(200).json("Your application is ready to use");
+  res.status(200).json("Hello, Application is ready to use");
 })
 
 // Start Server
