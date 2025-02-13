@@ -1,0 +1,158 @@
+openapi: 3.0.0
+info:
+  title: Authentication API
+  description: API for Google OAuth authentication and token management.
+  version: 1.0.0
+paths:
+  /auth/google:
+    get:
+      summary: Redirect to Google OAuth
+      description: Initiates authentication with Google OAuth and redirects the user to Google's login page.
+      responses:
+        302:
+          description: Redirects to Google login.
+
+  /auth/google/callback:
+    get:
+      summary: Google OAuth callback
+      description: Handles the OAuth callback from Google. If authentication is successful, generates a JWT token and sets it in an HTTP-only cookie.
+      responses:
+        200:
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Login successful"
+        401:
+          description: Authentication failed, user is redirected to the login page.
+
+  /shorten:
+    post:
+      summary: Shorten a URL
+      description: Creates a short URL from a long URL.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                longUrl:
+                  type: string
+                  format: uri
+              required:
+                - longUrl
+            example:
+              longUrl: "https://example.com/very-long-url"
+      responses:
+        201:
+          description: Short URL created
+          content:
+            application/json:
+              example:
+                shortUrl: "http://short.ly/abc123"
+        400:
+          description: Invalid URL
+        500:
+          description: Internal Server Error
+
+  /shorten/{alias}:
+    get:
+      summary: Redirect to long URL
+      description: Redirects a short URL alias to its original long URL.
+      parameters:
+        - name: alias
+          in: path
+          required: true
+          description: The short URL alias
+          schema:
+            type: string
+      responses:
+        302:
+          description: Redirecting to long URL
+        404:
+          description: Alias not found
+        500:
+          description: Internal Server Error
+
+  /analytics/overall:
+    get:
+      summary: Get overall analytics
+      description: Fetches overall analytics including total URLs, clicks, and unique users.
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Overall analytics data
+          content:
+            application/json:
+              example:
+                totalUrls: 10
+                totalClicks: 500
+                uniqueUsers: 200
+        401:
+          description: Unauthorized access
+        500:
+          description: Internal Server Error
+
+  /analytics/{alias}:
+    get:
+      summary: Fetch analytics for a short URL
+      description: Retrieves analytics for a specific shortened URL.
+      parameters:
+        - name: alias
+          in: path
+          required: true
+          description: The short alias of the URL
+          schema:
+            type: string
+      responses:
+        200:
+          description: Analytics data for the short URL
+          content:
+            application/json:
+              example:
+                totalClicks: 100
+                uniqueUsers: 50
+        404:
+          description: No analytics found
+        500:
+          description: Internal Server Error
+
+  /analytics/topic/{topic}:
+    get:
+      summary: Fetch analytics for a topic
+      description: Gets analytics data related to a specific topic.
+      parameters:
+        - name: topic
+          in: path
+          required: true
+          description: Topic name
+          schema:
+            type: string
+      responses:
+        200:
+          description: Analytics data for the topic
+          content:
+            application/json:
+              example:
+                topic: "technology"
+                totalClicks: 300
+                uniqueUsers: 150
+        400:
+          description: No URLs found for this topic
+        500:
+          description: Internal Server Error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
