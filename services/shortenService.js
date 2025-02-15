@@ -1,5 +1,5 @@
 const {connectDB, getDB} = require("../config/db");
-const redisClient = require("../config/redis");
+// const redisClient = require("../config/redis");
 const shortid = require("shortid");
 const geoip = require("geoip-lite"); // To get geolocation from IP
 const moment = require("moment");
@@ -34,14 +34,14 @@ async function shortenUrl(urlData) {
         };
 
         const result = await urlCollection.insertOne(newUrl); // Save to MongoDB
-        if(result) {
-            if (redisClient.isOpen) {
-                await redisClient.setEx(shortUrl, 3600, urlData.longUrl); // Cache for 1 hour
-            } 
-            else {
-                console.error("Redis client is not connected");
-            }
-        }
+        // if(result) {
+        //     if (redisClient.isOpen) {
+        //         await redisClient.setEx(shortUrl, 3600, urlData.longUrl); // Cache for 1 hour
+        //     } 
+        //     else {
+        //         console.error("Redis client is not connected");
+        //     }
+        // }
 
         return { shortUrl: `http://short.ly/${shortUrl}`, createdAt: newUrl.createdAt };
 
@@ -56,7 +56,8 @@ async function shortenUrl(urlData) {
 async function longURL(alias, ip, userAgent, userId) {
     try{
         
-        let longUrl = await redisClient.get(alias); // Check Redis first for the short URL
+        // let longUrl = await redisClient.get(alias); // Check Redis first for the short URL
+        let longUrl;
         await connectDB();
         const db = getDB();
 
@@ -68,7 +69,7 @@ async function longURL(alias, ip, userAgent, userId) {
             if (urlDoc) {
                 longUrl = urlDoc.longUrl;
                 // Cache the long URL in Redis for future lookups
-                await redisClient.setEx(alias, 3600, longUrl); // Cache for 1 hour
+                // await redisClient.setEx(alias, 3600, longUrl); // Cache for 1 hour
             } else {
                 return { error: "Short URL not found" };
             }
