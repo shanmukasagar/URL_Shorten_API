@@ -7,7 +7,7 @@ services:
       - "5000:5000"
     environment:
       - MONGO_URI=mongodb+srv://shanmukasagar:sagar%4005@cluster0.3bton.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-      - REDIS_URI=redis://redis:6379
+      - REDIS_URI=rediss://default:ATkUAAIncDE2MTZiOWQwMTEyMzA0YmVhOTljYjU1M2E4NDIwMTI4ZXAxMTQ2MTI@capable-krill-14612.upstash.io:6379
     depends_on:
       - redis
 

@@ -150,7 +150,7 @@ Create a .env file in the root directory and add the following environment varia
     PORT=5001
     JWT_SECRET=123456789
     MONGO_URI=mongodb+srv://shanmukasagar:sagar%4005@cluster0.3bton.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-    REDIS_URI = redis://127.0.0.1:6379
+    REDIS_URI = rediss://default:ATkUAAIncDE2MTZiOWQwMTEyMzA0YmVhOTljYjU1M2E4NDIwMTI4ZXAxMTQ2MTI@capable-krill-14612.upstash.io:6379
     GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
     SESSION_SECRET = 123456789
     COOKIE_ENC_KEY = wJ5@zN8!dP3&kLmQ9vT$XyR#bF6G*HjK

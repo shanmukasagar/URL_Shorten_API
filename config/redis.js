@@ -1,18 +1,26 @@
+require("dotenv").config();
 const redis = require("redis");
 
-const redisClient = redis.createClient({
-  url: process.env.REDIS_URI,
-  });
+const client = redis.createClient({
+  url: process.env.REDIS_URI, // Ensure this is set in your .env file or Render environment variables
+  socket: { tls: true }, // Required for Upstash
+});
 
-  redisClient.on("error", (err) => console.error("Redis Error:", err));
+client.on("error", (err) => console.error("Redis Error:", err));
 
-  redisClient.connect()  // Explicitly connecting the Redis client
-    .then(() => {
-      console.log("Redis client connected successfully");
-    })
-    .catch((err) => {
-      console.error("Error connecting to Redis:", err);
-  });
+const connectRedis = async () => {
+  try {
+    await client.connect();
+    console.log("Connected to Upstash Redis");
 
+    // Test connection
+    const pong = await client.ping();
+    console.log("Redis Ping Response:", pong); // Should print: PONG
+  } catch (error) {
+    console.error("Redis Connection Failed:", error);
+  }
+};
 
-module.exports = redisClient;
+connectRedis();
+
+module.exports = client; // Export for use in other files if needed
