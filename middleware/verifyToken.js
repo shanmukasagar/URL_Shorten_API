@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const cryptoJS = require("crypto-js");
 
 const verifyToken = (req, res, next) => {
-    let token = req.cookies ? req.cookies.token : req.headers.authorization?.split(" ")[1];
+    let token = req.cookies.token || req.headers.authorization?.split(" ")[1];
     if (!token) {
         return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
